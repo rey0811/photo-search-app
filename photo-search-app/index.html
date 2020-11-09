@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <title>Flickr API Test</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="main.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app" class="container">
+    <div class="row justify-content-center my-4">
+      <header class="mb-5">
+        <h1>写真検索アプリ by flickr</h1>
+        <form
+          class="form-group justify-content-center my-4"
+          v-on:submit.prevent="fetchImagesFromFlickr"
+        >
+          <input
+            type="search" name="search"
+            class="form-control mr-sm-2 mb-4"
+            placeholder="検索テキストを入力"
+            aria-label="Search"
+            required
+          >
+          <input
+            type="search__num" name="search__num"
+            class="form-control mr-sm-2 mb-4"
+            placeholder="検索枚数を入力(1~500)"
+            aria-label="Search__num"
+            required
+            pattern="([1-9][0-9]*)"
+          >
+          <button
+            type="submit"
+            class="text-center btn btn-block btn-primary my-2 my-sm-0"
+          >
+            検索
+          </button>
+        </form>
+      </header>
+    </div>
+    <div class="row justify-content-center px-4">
+      <p v-if="isInitalized">検索してください。</p>
+      <p
+        v-show="isFetching"
+        class="position-relative mx-auto"
+      >
+        <span
+          class="loading-icon fas fa-sync"
+          aria-hidden="true"
+        >
+        </span>
+      </p>
+      <p v-show="isFailed">
+        データの取得に失敗しました。しばらく時間を置いてから、再度お試しください。
+      </p>
+      <p v-show="isNotFound">
+        写真が見つかりませんでした。別の言葉で検索してみてください。
+      </p>
+      <p v-show="isZero">
+        検索枚数には1~500の値を入力してください。
+      </p>
+
+      <div>
+        <template v-if="isFound">
+          <a
+          v-for="photo in photos"
+          v-bind:key="photo.id"
+          v-bind:href="photo.pageURL"
+          v-tooltip="photo.text"
+          class="d-inline-block"
+          target="_blank"
+        >
+          <img
+            v-bind:src="photo.imageURL"
+            v-bind:alt="photo.text"
+            width="150"
+            height="150"
+          >
+        </a>
+        </template>
+      </div>
+    </div>
+  </div>
+
+  <!-- まずjQuery -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+  <!-- Popper.js, 次に Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <script src="main.js"></script>
+
+  <!-- Font Awesome -->
+  <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
+</body>
+
+</html>
